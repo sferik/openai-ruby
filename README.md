@@ -20,6 +20,18 @@ Or install it yourself as:
 
 ## Usage
 
+```
+require 'openai'
+client = Openai::Client.new(pk: "your_public_key", sk: "your_secret_key")
+completions = client.completions(prompt: "Have you wondered why", max_tokens: 10)
+```
+
+This should return a Hash which is something like:
+
+```
+=> {"id"=>"cmpl-LMDA7GAlzSHvB6ZEUeFwvipv", "object"=>"text_completion", "created"=>1595276408, "model"=>"davinci:2020-05-03", "choices"=>[{"text"=>" airlines charge more for certain seats?\n\nOne", "index"=>0, "logprobs"=>nil, "finish_reason"=>"length"}]}
+
+```
 
 ## Development
 
