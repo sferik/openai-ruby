@@ -1,3 +1,3 @@
-module Openai
-  VERSION = "0.1.0"
+module OpenAI
+  VERSION = "0.2.0".freeze
 end

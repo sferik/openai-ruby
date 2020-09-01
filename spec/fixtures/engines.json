@@ -1,0 +1,35 @@
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "ada",
+      "object": "engine",
+      "owner": "openai",
+      "ready": true
+    },
+    {
+      "id": "babbage",
+      "object": "engine",
+      "owner": "openai",
+      "ready": true
+    },
+    {
+      "id": "curie",
+      "object": "engine",
+      "owner": "openai",
+      "ready": true
+    },
+    {
+      "id": "davinci",
+      "object": "engine",
+      "owner": "openai",
+      "ready": true
+    },
+    {
+      "id": "davinci-v2b",
+      "object": "engine",
+      "owner": "openai",
+      "ready": true
+    }
+  ]
+}

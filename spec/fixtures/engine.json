@@ -1,0 +1,6 @@
+{
+  "id": "davinci",
+  "object": "engine",
+  "owner": "openai",
+  "ready": true
+}

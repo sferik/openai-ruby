@@ -1,0 +1,8 @@
+{
+  "error": {
+    "code": null,
+    "message": "Incorrect API key provided: sk-f00. You can find your API key at https://beta.openai.com.",
+    "param": null,
+    "type": "invalid_request_error"
+  }
+}
