@@ -1,4 +1,4 @@
-# Openai
+# OpenAI API client library to access GPT-3 in Ruby
 
 This is a wrapper for calling OpenAI and GPT-3's HTTP APIs. API docs are available here: https://beta.openai.com/api-docs
 
@@ -20,18 +20,27 @@ Or install it yourself as:
 
 ## Usage
 
-```
-require 'openai'
-client = Openai::Client.new(pk: "your_public_key", sk: "your_secret_key")
-completions = client.completions(prompt: "Have you wondered why", max_tokens: 10)
+```ruby
+require "openai"
+
+openai_client = OpenAI::Client.new(api_key: ENV.fetch("OPENAI_API_KEY"), default_engine: "ada")
+
+# List Engines
+openai_client.engines
+
+# Retrieve Engine
+openai_client.engine("babbage")
+
+# Search
+openai_client.search(documents: ["White House", "hospital", "school"], query: "the president")
+
+# Create Completion
+openai_client.completions(prompt: "Once upon a time", max_tokens: 5)
 ```
 
-This should return a Hash which is something like:
+## TODO
 
-```
-=> {"id"=>"cmpl-LMDA7GAlzSHvB6ZEUeFwvipv", "object"=>"text_completion", "created"=>1595276408, "model"=>"davinci:2020-05-03", "choices"=>[{"text"=>" airlines charge more for certain seats?\n\nOne", "index"=>0, "logprobs"=>nil, "finish_reason"=>"length"}]}
-
-```
+* Stream Completion
 
 ## Development
 

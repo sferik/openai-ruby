@@ -1,0 +1,20 @@
+{
+  "object": "list",
+  "data": [
+    {
+      "object": "search_result",
+      "document": 0,
+      "score": 213.705
+    },
+    {
+      "object": "search_result",
+      "document": 1,
+      "score": 50.396
+    },
+    {
+      "object": "search_result",
+      "document": 2,
+      "score": 37.574
+    }
+  ]
+}
