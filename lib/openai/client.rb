@@ -86,7 +86,7 @@ module OpenAI
       end
     end
 
-    private def get(path, &block)
+    private def get(path)
       uri = URI.parse("https://api.openai.com#{path}")
       req = Net::HTTP::Get.new(uri)
       headers.each do |name, value|
@@ -98,7 +98,7 @@ module OpenAI
       handle_response(response)
     end
 
-    private def post(path, body: nil, &block)
+    private def post(path, body: nil)
       uri = URI.parse("https://api.openai.com#{path}")
       req = Net::HTTP::Post.new(uri)
       req.body = body.to_json
