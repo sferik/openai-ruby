@@ -111,15 +111,25 @@ RSpec.describe OpenAI::Client do
         .to_return(body: File.read("spec/fixtures/search.json"), headers: response_headers)
     end
 
+    let(:documents) { ["White House", "hospital", "school"] }
+    let(:query) { "the president" }
+    let(:search_params) { { documents: documents, query: query, engine: "ada" } }
+
     it "searches" do
-      documents = ["White House", "hospital", "school"]
-      query = "the president"
-      results = client.search(documents: documents, query: query, engine: "ada")
+      results = client.search(search_params)
       expect(results).to be_an(Array)
       first_result = results.first
       expect(first_result.document).to eq(0)
       expect(first_result.score).to be_a(Float)
       expect(first_result.score).to be >= 0.0
+      expect(first_result.text).to eq(documents[first_result.document])
+    end
+
+    context "with return_text false" do
+      it "searches but doesn't return document text" do
+        results = client.search(search_params.merge(return_text: false))
+        expect(results.map(&:text)).to all(be_nil)
+      end
     end
   end
 end

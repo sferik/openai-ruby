@@ -72,7 +72,7 @@ module OpenAI
       )
     end
 
-    def search(documents:, query:, engine: default_engine)
+    def search(documents:, query:, engine: default_engine, return_text: true)
       body = {
         "documents" => documents,
         "query"     => query,
@@ -80,9 +80,9 @@ module OpenAI
 
       search_results = post("/v1/engines/#{engine}/search", body: body)
       search_results[:data].map.with_index do |datum, index|
-        SearchResult.new(**datum).tap do |result|
-          result.text = documents[index]
-        end
+        result = SearchResult.new(**datum)
+        result.text = documents[index] if return_text
+        result
       end
     end
 
