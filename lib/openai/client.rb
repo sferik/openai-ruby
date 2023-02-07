@@ -31,7 +31,7 @@ module OpenAI
       end
     end
 
-    def completions(prompt: nil, max_tokens: nil, temperature: nil, top_p: nil, n: nil, logprobs: nil, echo: nil, stop: nil, presence_penalty: nil, frequency_penalty: nil, engine: default_engine)
+    def completions(prompt: nil, max_tokens: nil, temperature: nil, top_p: nil, n: nil, logprobs: nil, echo: nil, stop: nil, presence_penalty: nil, frequency_penalty: nil, best_of: nil, engine: default_engine)
       body = {
         "prompt"            => prompt,
         "max_tokens"        => max_tokens,
@@ -43,6 +43,7 @@ module OpenAI
         "stop"              => stop,
         "presence_penalty"  => presence_penalty,
         "frequency_penalty" => frequency_penalty,
+        "best_of"           => best_of,
       }.compact
 
       completion = post("/v1/engines/#{engine}/completions", body: body)
