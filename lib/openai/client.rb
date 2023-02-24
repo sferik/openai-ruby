@@ -73,6 +73,32 @@ module OpenAI
       )
     end
 
+    def edit(input: nil, instruction: nil, n: nil, temperature: nil, top_p: nil, engine: default_engine)
+      body = {
+        "input"             => input,
+        "instruction"       => instruction,
+        "n"                 => n,
+        "temperature"       => temperature,
+        "top_p"             => top_p
+      }.compact
+
+      edit = post("/v1/engines/#{engine}/edits", body: body)
+
+      choices = edit[:choices]&.map do |choice|
+        Choice.new(
+          index: choice[:index],
+          text: choice[:text]
+        )
+      end
+
+      Edit.new(
+        choices: choices,
+        created: edit[:created],
+        usage: edit[:usage],
+        object: edit[:object],
+      )
+    end
+
     def search(documents:, query:, engine: default_engine)
       body = {
         "documents" => documents,
