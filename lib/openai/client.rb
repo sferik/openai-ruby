@@ -73,7 +73,7 @@ module OpenAI
       )
     end
 
-    def edit(input: nil, instruction: nil, n: nil, temperature: nil, top_p: nil, engine: default_engine)
+    def edits(input: nil, instruction: nil, n: nil, temperature: nil, top_p: nil, engine: default_engine)
       body = {
         "input"             => input,
         "instruction"       => instruction,
