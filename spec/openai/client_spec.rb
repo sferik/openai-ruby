@@ -104,6 +104,21 @@ RSpec.describe OpenAI::Client do
     end
   end
 
+  describe "#edits" do
+    before do
+      stub_request(:post, "https://api.openai.com/v1/engines/text-davinci-edit-001/edits")
+        .with(headers: request_headers)
+        .to_return(body: File.read("spec/fixtures/edits.json"), headers: response_headers)
+    end
+
+    it "creates an edit" do
+      input = "What day of the wek is it?"
+      instruction = "Fix the spelling mistakes"
+      results = client.edits(input: input, instruction: instruction, engine: "text-davinci-edit-001")
+      expect(results).to be_a(OpenAI::Edit)
+    end
+  end
+
   describe "#search" do
     before do
       stub_request(:post, "https://api.openai.com/v1/engines/ada/search")
