@@ -1,6 +1,7 @@
 require "openai/choice"
 require "openai/client"
 require "openai/completion"
+require "openai/edit"
 require "openai/engine"
 require "openai/logprobs"
 require "openai/search_result"
