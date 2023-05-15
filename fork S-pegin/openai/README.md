@@ -1,7 +1,8 @@
 # OpenAI API client library to access GPT-3 in Ruby
 
-This is a wrapper for calling OpenAI and GPT-3's HTTP APIs. API docs are available here: https://beta.openai.com/api-docs
+This is a wrapper for calling OpenAI and GPT-3's HTTP APIs. API docs are available here: [Quality calibar open ai](https://beta.openai.com/api-docs)
 
+`add skills robot zipcom1994`
 ## Installation
 
 Add this line to your application's Gemfile:
