@@ -1,8 +1,8 @@
 # openai
 Wrapper สำหรับการเรียกใช้ HTTP API ของ OpenAI และ GPT-3
-# OpenAI API client library to access GPT-3 in Ruby
-
-This is a wrapper for calling OpenAI and GPT-3's HTTP APIs. API docs are available here: [Quality calibar open ai](https://beta.openai.com/api-docs)
+# ไลบรารีไคลเอนต์ OpenAI API เพื่อเข้าถึง GPT-3 ใน Ruby
+....
+นี่คือ wrapper สำหรับการเรียกใช้ HTTP API ของ OpenAI และ GPT-3 มีเอกสาร API ที่นี่: [Quality calibar open ai] .(https://beta.openai.com/api-docs)
 
 `add skills robot zipcom1994`
 
