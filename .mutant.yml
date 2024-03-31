@@ -1,0 +1,16 @@
+---
+coverage_criteria:
+  process_abort: true
+fail_fast: true
+includes:
+- lib
+integration:
+  name: minitest
+matcher:
+  subjects:
+  - OpenAI*
+mutation:
+  operators: full
+  timeout: 10.0
+requires:
+- openai

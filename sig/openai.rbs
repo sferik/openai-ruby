@@ -1,0 +1,249 @@
+module OpenAI
+  VERSION: Gem::Version
+
+  class Authenticator
+    AUTHENTICATION_HEADER: String
+
+    def header: -> Hash[String, String]
+  end
+
+  class BearerTokenAuthenticator < Authenticator
+    attr_accessor bearer_token: String
+    def initialize: (bearer_token: String) -> void
+    def header: -> Hash[String, String]
+  end
+
+  class Error < StandardError
+  end
+
+  class ClientError < HTTPError
+  end
+
+  class BadGateway < ClientError
+  end
+
+  class BadRequest < ClientError
+  end
+
+  class ConnectionException < ClientError
+  end
+
+  class HTTPError < Error
+    JSON_CONTENT_TYPE_REGEXP: Regexp
+
+    attr_reader response : Net::HTTPResponse
+    attr_reader code : String
+
+    def initialize: (response: Net::HTTPResponse) -> void
+
+    private
+    def error_message: (Net::HTTPResponse response) -> String
+    def message_from_json_response:  (Net::HTTPResponse response) -> String
+    def json?: (Net::HTTPResponse response) -> bool
+  end
+
+  class Forbidden < ClientError
+  end
+
+  class GatewayTimeout < ClientError
+  end
+
+  class Gone < ClientError
+  end
+
+  class InternalServerError < ServerError
+  end
+
+  class NetworkError < Error
+  end
+
+  class NotAcceptable < ClientError
+  end
+
+  class NotFound < ClientError
+  end
+
+  class PayloadTooLarge < ClientError
+  end
+
+  class ServerError < HTTPError
+  end
+
+  class ServiceUnavailable < ServerError
+  end
+
+  class TooManyRedirects < Error
+  end
+
+  class TooManyRequests < ClientError
+    @rate_limits: Array[RateLimit]
+
+    def rate_limit: -> RateLimit?
+    def rate_limits: -> Array[RateLimit]
+    def reset_at: -> Time
+    def reset_in: -> Integer?
+  end
+
+  class Unauthorized < ClientError
+  end
+
+  class UnprocessableEntity < ClientError
+  end
+
+  class Connection
+    DEFAULT_HOST: String
+    DEFAULT_PORT: Integer
+    DEFAULT_OPEN_TIMEOUT: Integer
+    DEFAULT_READ_TIMEOUT: Integer
+    DEFAULT_WRITE_TIMEOUT: Integer
+    DEFAULT_DEBUG_OUTPUT: IO
+    NETWORK_ERRORS: Array[(singleton(Errno::ECONNREFUSED) | singleton(Errno::ECONNRESET) | singleton(Net::OpenTimeout) | singleton(Net::ReadTimeout) | singleton(OpenSSL::SSL::SSLError))]
+
+    @proxy_url: URI::Generic | String
+
+    extend Forwardable
+
+    attr_accessor open_timeout : Float | Integer
+    attr_accessor read_timeout : Float | Integer
+    attr_accessor write_timeout : Float | Integer
+    attr_accessor debug_output : IO
+
+    attr_reader proxy_uri: URI::Generic?
+    attr_reader proxy_host : String?
+    attr_reader proxy_port : Integer?
+    attr_reader proxy_user : String?
+    attr_reader proxy_pass : String?
+
+    def initialize: (?open_timeout: Float | Integer, ?read_timeout: Float | Integer, ?write_timeout: Float | Integer, ?proxy_url: URI::Generic? | String?, ?debug_output: IO) -> void
+    def proxy_url=: (URI::Generic | String proxy_url) -> void
+    def perform: (request: Net::HTTPRequest) -> Net::HTTPResponse
+
+    private
+    def build_http_client: (?String host, ?Integer port) -> Net::HTTP
+    def configure_http_client: (Net::HTTP http_client) -> Net::HTTP
+  end
+
+  class RateLimit
+    RATE_LIMIT_TYPE: String
+    APP_LIMIT_TYPE: String
+    USER_LIMIT_TYPE: String
+    TYPES: Array[String]
+
+    attr_accessor type: String
+    attr_accessor response: Net::HTTPResponse
+    def initialize: (type: String, response: Net::HTTPResponse) -> void
+    def limit: -> Integer
+    def remaining: -> Integer
+    def reset_at: -> Time
+    def reset_in: -> Integer?
+  end
+
+  class RequestBuilder
+    HTTP_METHODS: Hash[Symbol, (singleton(Net::HTTP::Get) | singleton(Net::HTTP::Post) | singleton(Net::HTTP::Put) | singleton(Net::HTTP::Delete))]
+    DEFAULT_HEADERS: Hash[String, String]
+
+    def initialize: (?content_type: String, ?user_agent: String) -> void
+    def build: (http_method: Symbol, uri: URI::Generic, ?body: String?, ?headers: Hash[String, String], ?authenticator: Authenticator) -> (Net::HTTPRequest)
+
+    private
+    def create_request: (http_method: Symbol, uri: URI::Generic, body: String?) -> (Net::HTTPRequest)
+    def add_authentication: (request: Net::HTTPRequest, authenticator: Authenticator) -> void
+    def add_headers: (request: Net::HTTPRequest, headers: Hash[String, String]) -> void
+    def escape_query_params: (URI::Generic uri) -> URI::Generic
+  end
+
+  class RedirectHandler
+    DEFAULT_MAX_REDIRECTS: Integer
+
+    attr_reader authenticator: Authenticator
+    attr_reader connection: Connection
+    attr_reader request_builder: RequestBuilder
+    attr_reader max_redirects: Integer
+    def initialize: (?connection: Connection, ?request_builder: RequestBuilder, ?max_redirects: Integer) -> void
+    def handle: (response: Net::HTTPResponse, request: Net::HTTPRequest, base_url: String, ?authenticator: Authenticator, ?redirect_count: Integer) -> Net::HTTPResponse
+
+    private
+    def build_new_uri: (Net::HTTPResponse response, String base_url) -> URI::Generic
+    def build_request: (Net::HTTPRequest request, URI::Generic new_uri, Integer response_code, Authenticator authenticator) -> Net::HTTPRequest
+    def send_new_request: (URI::Generic new_uri, Net::HTTPRequest new_request) -> Net::HTTPResponse
+  end
+
+  class ResponseParser
+    ERROR_MAP: Hash[Integer, singleton(BadGateway) | singleton(BadRequest) | singleton(ConnectionException) | singleton(Forbidden) | singleton(GatewayTimeout) | singleton(Gone) | singleton(InternalServerError) | singleton(NotAcceptable) | singleton(NotFound) | singleton(PayloadTooLarge) | singleton(ServiceUnavailable) | singleton(TooManyRequests) | singleton(Unauthorized) | singleton(UnprocessableEntity)]
+    JSON_CONTENT_TYPE_REGEXP: Regexp
+
+    def parse: (response: Net::HTTPResponse, ?array_class: Class?, ?object_class: Class?) -> untyped
+
+    private
+    def error: (Net::HTTPResponse response) -> HTTPError
+    def error_class: (Net::HTTPResponse response) -> (singleton(BadGateway) | singleton(BadRequest) | singleton(ConnectionException) | singleton(Forbidden) | singleton(GatewayTimeout) | singleton(Gone) | singleton(InternalServerError) | singleton(NotAcceptable) | singleton(NotFound) | singleton(PayloadTooLarge) | singleton(ServiceUnavailable) | singleton(TooManyRequests) | singleton(Unauthorized) | singleton(UnprocessableEntity))
+    def json?: (Net::HTTPResponse response) -> bool
+  end
+
+  class Client
+    DEFAULT_BASE_URL: String
+    DEFAULT_ARRAY_CLASS: singleton(Array)
+    DEFAULT_OBJECT_CLASS: singleton(Hash)
+    extend Forwardable
+    @authenticator: Authenticator | BearerTokenAuthenticator
+    @connection: Connection
+    @request_builder: RequestBuilder
+    @redirect_handler: RedirectHandler
+    @response_parser: ResponseParser
+
+    attr_accessor base_url: String
+    attr_accessor default_array_class: singleton(Array)
+    attr_accessor default_object_class: singleton(Hash)
+    attr_reader bearer_token: String?
+    def initialize: (?bearer_token: nil, ?base_url: String, ?open_timeout: Integer, ?read_timeout: Integer, ?write_timeout: Integer, ?debug_output: untyped, ?proxy_url: nil, ?default_array_class: singleton(Array), ?default_object_class: singleton(Hash), ?max_redirects: Integer) -> void
+    def get: (String endpoint, ?headers: Hash[String, String], ?array_class: Class, ?object_class: Class) -> untyped
+    def post: (String endpoint, ?String? body, ?headers: Hash[String, String], ?array_class: Class, ?object_class: Class) -> untyped
+    def put: (String endpoint, ?String? body, ?headers: Hash[String, String], ?array_class: Class, ?object_class: Class) -> untyped
+    def delete: (String endpoint, ?headers: Hash[String, String], ?array_class: Class, ?object_class: Class) -> untyped
+    def bearer_token=: (String bearer_token) -> void
+
+    private
+    def initialize_default_classes: (singleton(Array) default_array_class, singleton(Hash) default_object_class) -> singleton(Hash)
+    def initialize_authenticator: -> (Authenticator | BearerTokenAuthenticator)
+    def execute_request: (:delete | :get | :post | :put http_method, String endpoint, ?body: String?, ?headers: Hash[String, String], ?array_class: Class, ?object_class: Class) -> nil
+  end
+
+  module MediaUploader
+    MAX_RETRIES: Integer
+    BYTES_PER_MB: Integer
+    MEDIA_CATEGORIES: Array[String]
+    DM_GIF: String
+    DM_IMAGE: String
+    DM_VIDEO: String
+    SUBTITLES: String
+    TWEET_GIF: String
+    TWEET_IMAGE: String
+    TWEET_VIDEO: String
+    DEFAULT_MIME_TYPE: String
+    MIME_TYPES: Array[String]
+    GIF_MIME_TYPE: String
+    JPEG_MIME_TYPE: String
+    MP4_MIME_TYPE: String
+    PNG_MIME_TYPE: String
+    SUBRIP_MIME_TYPE: String
+    WEBP_MIME_TYPE: String
+    MIME_TYPE_MAP: Hash[String, String]
+    PROCESSING_INFO_STATES: Array[String]
+    extend MediaUploader
+
+    def upload: (client: Client, file_path: String, media_category: String, ?media_type: String, ?boundary: String) -> untyped
+    def chunked_upload: (client: Client, file_path: String, media_category: String, ?media_type: String, ?boundary: String, ?chunk_size_mb: Integer) -> untyped
+    def await_processing: (client: Client, media: untyped) -> untyped
+
+    private
+    def validate!: (file_path: String, media_category: String) -> nil
+    def infer_media_type: (String file_path, String media_category) -> String
+    def split: (String file_path, Integer chunk_size) -> Array[String]
+    def init: (upload_client: Client, file_path: String, media_type: String, media_category: String) -> untyped
+    def append: (upload_client: Client, file_paths: Array[String], media: untyped, media_type: String, ?boundary: String) -> Array[String]
+    def upload_chunk: (upload_client: Client, query: String, upload_body: String, file_path: String, ?headers: Hash[String, String]) -> Integer?
+    def cleanup_file: (String file_path) -> Integer?
+    def finalize: (upload_client: Client, media: untyped) -> untyped
+    def construct_upload_body: (file_path: String, media_type: String, ?boundary: String) -> String
+  end
+end

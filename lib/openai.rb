@@ -1,7 +1,1 @@
-require "openai/choice"
-require "openai/client"
-require "openai/completion"
-require "openai/engine"
-require "openai/logprobs"
-require "openai/search_result"
-require "openai/version"
+require_relative "openai/client"

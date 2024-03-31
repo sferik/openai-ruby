@@ -1,3 +1,5 @@
+require "rubygems/version"
+
 module OpenAI
-  VERSION = "0.3.0".freeze
+  VERSION = Gem::Version.create("0.4.0")
 end

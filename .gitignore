@@ -7,3 +7,6 @@
 /spec/reports/
 /tmp/
 Gemfile.lock
+
+# ASDF-VM / rbenv
+.tool-versions
