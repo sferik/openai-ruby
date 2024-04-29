@@ -4,7 +4,7 @@ source "https://rubygems.org"
 gemspec
 
 gem "minitest", ">= 5.19"
-gem "mutant-license", source: "https://oss:b78oB5NQSVVIXx8WVdyC4sYf4qvTUqso@gem.mutant.dev"
+gem "mutant", ">= 0.12"
 gem "mutant-minitest", ">= 0.11.24"
 gem "rake", ">= 13.0.6"
 gem "rbs", ">= 3.2.1"

@@ -14,3 +14,4 @@ mutation:
   timeout: 10.0
 requires:
 - openai
+usage: opensource
